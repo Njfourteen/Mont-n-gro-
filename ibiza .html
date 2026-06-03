@@ -1,0 +1,1455 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ibiza · Guide de Marghe & Yohann</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Libre+Baskerville:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+  :root {
+    --sand: #F5EDD8;
+    --terracotta: #C4714A;
+    --olive: #7A8C5E;
+    --dusk: #8B6F8A;
+    --sea: #4A8FA8;
+    --cream: #FAF6EE;
+    --ink: #2C2416;
+    --gold: #C9A84C;
+    --rust: #A84C2A;
+    --sage: #B5C4A0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    background: linear-gradient(160deg, #2C4A5A 0%, #5B8A7A 35%, #C4714A 70%, #8B6F8A 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    padding: 40px 20px;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Ccircle cx='50' cy='50' r='1' fill='rgba(255,255,255,0.06)'/%3E%3C/svg%3E") repeat;
+    opacity: 0.5;
+  }
+
+  /* Decorative palm silhouette via CSS */
+  .hero::after {
+    content: '🌴';
+    position: absolute;
+    font-size: 200px;
+    opacity: 0.06;
+    bottom: -20px;
+    right: -20px;
+    transform: rotate(-15deg);
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 13px;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 24px;
+    animation: fadeUp 1s ease both;
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(52px, 10vw, 110px);
+    font-weight: 700;
+    color: #fff;
+    line-height: 0.9;
+    letter-spacing: -2px;
+    animation: fadeUp 1s 0.2s ease both;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: #F5C88A;
+  }
+
+  .hero-sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 22px;
+    color: rgba(255,255,255,0.8);
+    margin-top: 20px;
+    animation: fadeUp 1s 0.4s ease both;
+  }
+
+  .hero-hearts {
+    margin-top: 32px;
+    font-size: 28px;
+    animation: fadeUp 1s 0.6s ease both;
+  }
+
+  .nav-pills {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 48px;
+    animation: fadeUp 1s 0.7s ease both;
+  }
+
+  .nav-pill {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: #fff;
+    padding: 10px 22px;
+    border-radius: 50px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 15px;
+    letter-spacing: 1px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s;
+    backdrop-filter: blur(4px);
+  }
+
+  .nav-pill:hover {
+    background: rgba(255,255,255,0.28);
+    transform: translateY(-2px);
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── LAYOUT ── */
+  .section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 80px 24px;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 5vw, 58px);
+    font-weight: 400;
+    letter-spacing: -1px;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+
+  .section-title em {
+    font-style: italic;
+    color: var(--terracotta);
+  }
+
+  .section-intro {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 19px;
+    color: #6B5A3A;
+    margin-bottom: 48px;
+    max-width: 600px;
+  }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 12px 0 48px;
+    color: var(--gold);
+  }
+
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+  }
+
+  /* ── MAP SECTION ── */
+  .map-section {
+    background: var(--sand);
+    padding: 60px 0;
+  }
+
+  .map-wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  #map {
+    width: 100%;
+    height: 550px;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(44,36,22,0.2);
+    overflow: hidden;
+  }
+
+  .map-legend {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    font-size: 14px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+  }
+
+  .legend-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid rgba(0,0,0,0.2);
+  }
+
+  /* ── FILTER TABS ── */
+  .filter-bar {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 36px;
+  }
+
+  .filter-btn {
+    background: transparent;
+    border: 1.5px solid var(--terracotta);
+    color: var(--terracotta);
+    padding: 8px 20px;
+    border-radius: 50px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.25s;
+  }
+
+  .filter-btn:hover, .filter-btn.active {
+    background: var(--terracotta);
+    color: #fff;
+  }
+
+  .filter-btn.olive-btn { border-color: var(--olive); color: var(--olive); }
+  .filter-btn.olive-btn:hover, .filter-btn.olive-btn.active { background: var(--olive); color: #fff; }
+
+  /* ── BEACH CARDS ── */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 28px;
+  }
+
+  .card {
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(44,36,22,0.08);
+    transition: transform 0.3s, box-shadow 0.3s;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 40px rgba(44,36,22,0.15);
+  }
+
+  .card-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+    background: var(--sand);
+  }
+
+  .card-img-fallback {
+    width: 100%;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 56px;
+    background: linear-gradient(135deg, var(--sand), var(--sage));
+  }
+
+  .card-body {
+    padding: 20px 22px 24px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .card-tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+  }
+
+  .tag {
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 50px;
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+  }
+
+  .tag-sea { background: #DDF0F5; color: var(--sea); }
+  .tag-hike { background: #EAF2E3; color: var(--olive); }
+  .tag-sunset { background: #FDF0E3; color: var(--terracotta); }
+  .tag-local { background: #F0EAF5; color: var(--dusk); }
+  .tag-wild { background: #F5EDD8; color: #7A6030; }
+  .tag-beach-club { background: #FFE8E0; color: var(--rust); }
+
+  .card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 400;
+    margin-bottom: 8px;
+    color: var(--ink);
+  }
+
+  .card p {
+    font-size: 15.5px;
+    color: #5A4A30;
+    line-height: 1.6;
+    flex: 1;
+  }
+
+  .card-tip {
+    margin-top: 14px;
+    padding: 10px 14px;
+    background: var(--sand);
+    border-left: 3px solid var(--gold);
+    border-radius: 0 8px 8px 0;
+    font-size: 14px;
+    color: #6B5A3A;
+    font-style: italic;
+  }
+
+  .card-tip::before { content: '💡 '; }
+
+  /* ── RESTAURANT CARDS ── */
+  .resto-card {
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(44,36,22,0.08);
+    transition: transform 0.3s, box-shadow 0.3s;
+    display: flex;
+    gap: 0;
+  }
+
+  .resto-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(44,36,22,0.14);
+  }
+
+  .resto-side {
+    width: 180px;
+    min-height: 180px;
+    flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .resto-side img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .resto-side-fallback {
+    width: 100%;
+    height: 100%;
+    min-height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    background: linear-gradient(135deg, var(--sand), #E8D5B8);
+  }
+
+  .resto-body {
+    padding: 20px 22px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .resto-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+  }
+
+  .price-badge {
+    font-family: 'Playfair Display', serif;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 3px 12px;
+    border-radius: 50px;
+  }
+
+  .price-1 { background: #EAF2E3; color: var(--olive); }
+  .price-2 { background: #FDF0E3; color: var(--terracotta); }
+  .price-3 { background: #FFE8E0; color: var(--rust); }
+
+  .cuisine-badge {
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #8A7A5A;
+    font-family: 'Cormorant Garamond', serif;
+  }
+
+  .cash-only {
+    font-size: 12px;
+    background: #FFF3CD;
+    color: #856404;
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+
+  .resto-body h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 400;
+    margin-bottom: 6px;
+  }
+
+  .resto-body p {
+    font-size: 15px;
+    color: #5A4A30;
+    line-height: 1.6;
+    flex: 1;
+  }
+
+  .resto-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 12px;
+    font-size: 14px;
+    color: var(--terracotta);
+    text-decoration: none;
+    font-family: 'Cormorant Garamond', serif;
+    letter-spacing: 0.5px;
+    transition: color 0.2s;
+  }
+
+  .resto-link:hover { color: var(--rust); }
+
+  .restos-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* ── SUNSET SECTION ── */
+  .sunset-section {
+    background: linear-gradient(135deg, #2C1A2E 0%, #5B3A6A 40%, #C4714A 100%);
+    padding: 80px 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .sunset-section::before {
+    content: '☀';
+    position: absolute;
+    font-size: 300px;
+    opacity: 0.04;
+    top: -60px;
+    right: 40px;
+    pointer-events: none;
+  }
+
+  .sunset-section .section-title,
+  .sunset-section .section-intro {
+    color: rgba(255,255,255,0.9);
+  }
+
+  .sunset-section .section-intro { color: rgba(255,255,255,0.65); }
+
+  .sunset-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+  }
+
+  .sunset-card {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 14px;
+    padding: 24px;
+    backdrop-filter: blur(8px);
+    transition: background 0.3s, transform 0.3s;
+  }
+
+  .sunset-card:hover {
+    background: rgba(255,255,255,0.18);
+    transform: translateY(-4px);
+  }
+
+  .sunset-card-icon { font-size: 32px; margin-bottom: 12px; }
+
+  .sunset-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    color: #F5C88A;
+    margin-bottom: 8px;
+    font-weight: 400;
+  }
+
+  .sunset-card p {
+    font-size: 15px;
+    color: rgba(255,255,255,0.75);
+    line-height: 1.6;
+  }
+
+  .sunset-card a {
+    display: inline-block;
+    margin-top: 12px;
+    font-size: 13px;
+    color: #F5C88A;
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+  }
+
+  .sunset-card a:hover { opacity: 1; }
+
+  /* ── ACTIVITIES ── */
+  .activities-section { background: #fff; }
+
+  .activity-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    margin-bottom: 28px;
+  }
+
+  @media(max-width: 700px) {
+    .activity-row { grid-template-columns: 1fr; }
+    .resto-card { flex-direction: column; }
+    .resto-side { width: 100%; height: 200px; }
+    .resto-side-fallback { min-height: 160px; }
+  }
+
+  .activity-card {
+    background: var(--cream);
+    border-radius: 14px;
+    padding: 24px 26px;
+    border: 1px solid rgba(44,36,22,0.07);
+    transition: transform 0.3s;
+  }
+
+  .activity-card:hover { transform: translateY(-3px); }
+
+  .activity-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 400;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .activity-card p { font-size: 15px; color: #5A4A30; line-height: 1.6; }
+
+  .activity-card a {
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 14px;
+    color: var(--sea);
+    text-decoration: none;
+  }
+
+  /* ── SOUVENIR / TIPS ── */
+  .tips-section { background: var(--sand); }
+
+  .tips-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 24px;
+  }
+
+  .tip-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 28px 24px;
+    text-align: center;
+    box-shadow: 0 2px 16px rgba(44,36,22,0.06);
+    transition: transform 0.3s;
+  }
+
+  .tip-card:hover { transform: translateY(-4px); }
+
+  .tip-icon { font-size: 44px; margin-bottom: 16px; }
+
+  .tip-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 400;
+    margin-bottom: 10px;
+  }
+
+  .tip-card p { font-size: 15px; color: #5A4A30; line-height: 1.6; }
+
+  /* ── NIGHTLIFE ── */
+  .night-section {
+    background: #1A1020;
+    padding: 80px 0;
+  }
+
+  .night-section .section-title { color: #F5C88A; }
+  .night-section .section-intro { color: rgba(255,255,255,0.5); }
+
+  .night-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+  }
+
+  .night-card {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 14px;
+    padding: 24px;
+    transition: background 0.3s, transform 0.3s;
+  }
+
+  .night-card:hover {
+    background: rgba(255,255,255,0.12);
+    transform: translateY(-4px);
+  }
+
+  .night-card-icon { font-size: 30px; margin-bottom: 12px; }
+
+  .night-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    color: #E0C8FF;
+    margin-bottom: 8px;
+    font-weight: 400;
+  }
+
+  .night-card p { font-size: 14.5px; color: rgba(255,255,255,0.6); line-height: 1.6; }
+
+  .night-card a {
+    display: inline-block;
+    margin-top: 12px;
+    font-size: 13px;
+    color: #C8A0E8;
+    text-decoration: none;
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    background: var(--ink);
+    color: rgba(255,255,255,0.7);
+    text-align: center;
+    padding: 60px 24px;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 20px;
+  }
+
+  .footer-hearts { font-size: 32px; margin: 16px 0; }
+  .footer small {
+    display: block;
+    margin-top: 24px;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: normal;
+    font-size: 13px;
+    letter-spacing: 2px;
+    opacity: 0.4;
+    text-transform: uppercase;
+  }
+
+  /* ── LEAFLET CUSTOM ── */
+  .leaflet-popup-content-wrapper {
+    border-radius: 12px !important;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2) !important;
+    font-family: 'Cormorant Garamond', serif !important;
+  }
+
+  .map-popup h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .map-popup p { font-size: 14px; color: #5A4A30; margin: 0; }
+
+  .map-popup .pop-tag {
+    display: inline-block;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    margin-bottom: 6px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  /* Sticky nav */
+  .sticky-nav {
+    position: sticky;
+    top: 0;
+    z-index: 999;
+    background: rgba(250,246,238,0.92);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(44,36,22,0.1);
+    padding: 12px 24px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .sticky-nav a {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 15px;
+    color: var(--ink);
+    text-decoration: none;
+    padding: 5px 16px;
+    border-radius: 50px;
+    transition: all 0.2s;
+    letter-spacing: 0.5px;
+  }
+
+  .sticky-nav a:hover {
+    background: var(--terracotta);
+    color: #fff;
+  }
+
+  /* hidden class for filter */
+  .card.hidden { display: none; }
+  .resto-card.hidden { display: none; }
+</style>
+</head>
+<body>
+
+<!-- ══ HERO ══ -->
+<section class="hero">
+  <div class="hero-badge">Guide de voyage · Été 2025</div>
+  <h1><em>Notre</em><br>IBIZA</h1>
+  <p class="hero-sub">Nos adresses, notre île, notre amour — par Marghe & Yohann</p>
+  <div class="hero-hearts">♥ ♥</div>
+  <div class="nav-pills">
+    <a class="nav-pill" href="#map-section">🗺 Carte</a>
+    <a class="nav-pill" href="#plages">🏖 Plages</a>
+    <a class="nav-pill" href="#restaurants">🍽 Restaurants</a>
+    <a class="nav-pill" href="#sunsets">🌅 Couchers de soleil</a>
+    <a class="nav-pill" href="#activities">📍 À faire</a>
+    <a class="nav-pill" href="#nightlife">🎶 Vie nocturne</a>
+  </div>
+</section>
+
+
+
+<!-- ══ MAP ══ -->
+<section id="map-section" class="map-section">
+  <div class="map-wrap">
+    <h2 class="section-title">La <em>carte</em> de l'île</h2>
+    <div class="divider">🌴</div>
+    <p style="font-family:'Cormorant Garamond',serif; font-style:italic; color:#6B5A3A; margin-bottom:24px;">
+      Cliquez sur les marqueurs pour découvrir chaque adresse. Filtrez par catégorie ci-dessous.
+    </p>
+    <div class="filter-bar" style="margin-bottom:16px;">
+      <button class="filter-btn active" onclick="filterMap('all',this)">Tout</button>
+      <button class="filter-btn" onclick="filterMap('plage',this)">🏖 Plages</button>
+      <button class="filter-btn" onclick="filterMap('resto',this)">🍽 Restaurants</button>
+      <button class="filter-btn" onclick="filterMap('sunset',this)">🌅 Sunsets</button>
+      <button class="filter-btn" onclick="filterMap('activite',this)">📍 Activités</button>
+    </div>
+    <div id="map"></div>
+    <div class="map-legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#4A8FA8;"></div> Plage</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#C4714A;"></div> Restaurant / Bar</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#C9A84C;"></div> Coucher de soleil</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#7A8C5E;"></div> Activité</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ PLAGES ══ -->
+<section id="plages">
+  <div class="section">
+    <h2 class="section-title">Les <em>Plages</em></h2>
+    <div class="divider">🌊</div>
+    <p class="section-intro">Nos coups de cœur — pas toujours les plus connus, toujours les plus beaux.</p>
+
+    <div class="filter-bar">
+      <button class="filter-btn olive-btn active" onclick="filterCards('beach','all',this)">Toutes</button>
+      <button class="filter-btn olive-btn" onclick="filterCards('beach','sunset',this)">🌅 Coucher de soleil</button>
+      <button class="filter-btn olive-btn" onclick="filterCards('beach','hike',this)">🥾 Accès à pied</button>
+      <button class="filter-btn olive-btn" onclick="filterCards('beach','wild',this)">🌿 Sauvage</button>
+      <button class="filter-btn olive-btn" onclick="filterCards('beach','local',this)">👥 Locale</button>
+    </div>
+
+    <div class="cards-grid" id="beach-grid">
+
+      <div class="card" data-tags="sunset">
+        <div class="card-img-fallback">🌅</div>
+        <div class="card-body">
+          <div class="card-tags">
+            <span class="tag tag-sunset">Coucher de soleil</span>
+            <span class="tag tag-beach-club">Beach club</span>
+          </div>
+          <h3>Cala Comte</h3>
+          <p>La carte postale d'Ibiza. Eaux turquoise, couchers de soleil incroyables. Le Sunset Ashram y est célèbre, mais le voisin <strong>Chiringuito de Cala Escondida</strong> (2 min à gauche) est plus chill et moins cher avec le même panorama.</p>
+          <div class="card-tip">Arriver tôt — grand parking au-dessus de la plage. Se diriger à gauche vers Cala Escondida pour éviter la foule.</div>
+        </div>
+      </div>
+
+      <div class="card" data-tags="hike wild">
+        <div class="card-img-fallback">🥾</div>
+        <div class="card-body">
+          <div class="card-tags">
+            <span class="tag tag-hike">Randonnée 20 min</span>
+            <span class="tag tag-wild">Sauvage</span>
+          </div>
+          <h3>Cala Saladeta</h3>
+          <p>Crique secrète accessible par un sentier de 20 min depuis Cala Salada. Eau cristalline, peu fréquentée le matin. Des vendeurs de mojitos improvisés apparaissent en fin d'après-midi.</p>
+          <div class="card-tip">Y aller tôt — accès limité. Apporter un parasol et un pique-nique.</div>
+        </div>
+      </div>
+
+      <div class="card" data-tags="sunset local">
+        <div class="card-img-fallback">🥁</div>
+        <div class="card-body">
+          <div class="card-tags">
+            <span class="tag tag-local">Hippie</span>
+            <span class="tag tag-sunset">Coucher de soleil</span>
+          </div>
+          <h3>Benirràs</h3>
+          <p>La plage hippie par excellence. Le dimanche soir, des locaux jouent du tambour sur la plage au coucher du soleil — le soleil se couche derrière un rocher en forme de pouce. Eau bleu-vert saisissante.</p>
+          <div class="card-tip">Incontournable le dimanche soir pour l'expérience tambours + coucher de soleil.</div>
+        </div>
+      </div>
+
+      <div class="card" data-tags="local">
+        <div class="card-img-fallback">🏖</div>
+        <div class="card-body">
+          <div class="card-tags">
+            <span class="tag tag-local">Local</span>
+            <span class="tag tag-sea">Belle eau</span>
+          </div>
+          <h3>Ses Salines</h3>
+          <p>La plage la plus longue d'Ibiza. Eau magnifique, beach clubs plus authentiques qu'ailleurs. Célèbre pour les défilés des danseuses des discothèques. On la traverse en passant par les salines.</p>
+          <div class="card-tip">À ne pas manquer. Combiner plage libre + beach club pour l'ambiance.</div>
+        </div>
+      </div>
+
+      <div class="card" data-tags="local">
+        <div class="card-img-fallback">🥪</div>
+        <div class="card-body">
+          <div class="card-tags">
+            <span class="tag tag-local">Proximité hôtels</span>
+            <span class="tag tag-sea">Belle eau</span>
+          </div>
+          <h3>Cala Llenya</h3>
+          <p>À 5 minutes à pied des hôtels Cala Azul et Cala Llenya Resort. Eau superbe, plage équipée et libre. La grand-mère centenaire du chiringuito prépare des sandwichs à l'omelette légendaires.</p>
+          <div class="card-tip">Idéale pour ceux qui séjournent dans les environs. Goûter les sandwichs de la grand-mère !</div>
+        </div>
+      </div>
+
+      <div class="card" data-tags="local">
+        <div class="card-img-fallback">🏊</div>
+        <div class="card-body">
+          <div class="card-tags">
+            <span class="tag tag-sea">Crique</span>
+            <span class="tag tag-local">Ambiance locale</span>
+          </div>
+          <h3>Cala Nova</h3>
+          <p>Petite crique très sympa avec un joli chiringuito, non loin de Cala Llenya. On s'y sent vraiment bien. Préférer le côté gauche (plus simple et local) au côté droit (beach clubs).</p>
+          <div class="card-tip">Se diriger à gauche en regardant la mer pour l'atmosphère authentique.</div>
+        </div>
+      </div>
+
+      <div class="card" data-tags="wild">
+        <div class="card-img-fallback">⚫</div>
+        <div class="card-body">
+          <div class="card-tags">
+            <span class="tag tag-wild">Unique</span>
+            <span class="tag tag-sea">Sable volcanique</span>
+          </div>
+          <h3>Cala Boix</h3>
+          <p>La seule plage de sable d'origine volcanique de l'île (noir-grisé). Peu fréquentée, accessible par un grand escalier depuis le parking. Mer un peu plus agitée, chiringuito sympathique.</p>
+          <div class="card-tip">Se garer au bout de la route, descendre par l'escalier.</div>
+        </div>
+      </div>
+
+      <div class="card" data-tags="wild">
+        <div class="card-img-fallback">🏺</div>
+        <div class="card-body">
+          <div class="card-tags">
+            <span class="tag tag-wild">Sauvage</span>
+            <span class="tag tag-sea">Soins argile</span>
+          </div>
+          <h3>Aqua Blanca</h3>
+          <p>Plage sauvage, ventée, avec de belles vagues. Célèbre pour ses roches argileuses — on peut s'y faire des soins de boue. Marche de 10 min en descente depuis le parking (raide au retour !).</p>
+          <div class="card-tip">Prévoir des chaussures pour la montée. Tester les soins d'argile naturels sur les roches.</div>
+        </div>
+      </div>
+
+      <div class="card" data-tags="local wild">
+        <div class="card-img-fallback">⚓</div>
+        <div class="card-body">
+          <div class="card-tags">
+            <span class="tag tag-local">Pépite locale</span>
+            <span class="tag tag-wild">Calme</span>
+          </div>
+          <h3>S'illot</h3>
+          <p>Toute petite plage près d'un petit port, fréquentée surtout par des locaux. Peu d'espace — arriver tôt. Vue magnifique. Bon restaurant au parking. "Une véritable pépite" selon Marghe & Yohann.</p>
+          <div class="card-tip">La perle rare pour fuir les touristes. Arriver à l'ouverture.</div>
+        </div>
+      </div>
+
+      <div class="card" data-tags="wild">
+        <div class="card-img-fallback">💎</div>
+        <div class="card-body">
+          <div class="card-tags">
+            <span class="tag tag-wild">Pépite</span>
+            <span class="tag tag-sea">Eau bleue-verte</span>
+          </div>
+          <h3>Cala Oliveira</h3>
+          <p>Petite crique secrète avec un joli chiringuito pour l'apéritif, eau bleu-vert extraordinaire contrastant avec les roches ocre. Accès par chemin de terre.</p>
+          <div class="card-tip">Apporter un parasol. Idéale pour l'apéro en fin d'après-midi.</div>
+        </div>
+      </div>
+
+      <div class="card" data-tags="sunset">
+        <div class="card-img-fallback">✈️</div>
+        <div class="card-body">
+          <div class="card-tags">
+            <span class="tag tag-sunset">Dernier jour</span>
+            <span class="tag tag-sea">Eau cristalline</span>
+          </div>
+          <h3>Sa Caleta</h3>
+          <p>Parfaite pour le dernier jour (proche de l'aéroport). Eau cristalline, sable et roches rouge intense. Restaurant Sa Caleta : excellente paella avec vue mer.</p>
+          <div class="card-tip">Combiner baignade + paella + promenade vers les anciens blockhaus militaires.</div>
+        </div>
+      </div>
+
+      <div class="card" data-tags="wild">
+        <div class="card-img-fallback">🌊</div>
+        <div class="card-body">
+          <div class="card-tags">
+            <span class="tag tag-wild">Vagues</span>
+            <span class="tag tag-sea">Fraîcheur</span>
+          </div>
+          <h3>Cala Xarraca</h3>
+          <p>Ventée, avec de belles vagues, pour ceux qui veulent échapper à la chaleur et à la foule. Plage à la fois équipée et libre, très agréable. Parfaite les jours chauds.</p>
+          <div class="card-tip">Idéale les jours de forte chaleur pour profiter de la brise marine.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══ RESTAURANTS ══ -->
+<section id="restaurants" style="background: #fff;">
+  <div class="section">
+    <h2 class="section-title">Bars & <em>Restaurants</em></h2>
+    <div class="divider">🍽</div>
+    <p class="section-intro">Nos tables chouchoutes — du chiringuito de pêcheurs au bar à vins naturels.</p>
+
+    <div class="filter-bar">
+      <button class="filter-btn active" onclick="filterCards('resto','all',this)">Tous</button>
+      <button class="filter-btn" onclick="filterCards('resto','poisson',this)">🐟 Poisson</button>
+      <button class="filter-btn" onclick="filterCards('resto','viande',this)">🥩 Viande</button>
+      <button class="filter-btn" onclick="filterCards('resto','bar',this)">🍷 Bar / Vins</button>
+      <button class="filter-btn" onclick="filterCards('resto','budget',this)">💸 Budget</button>
+      <button class="filter-btn" onclick="filterCards('resto','cash',this)">💵 Cash only</button>
+    </div>
+
+    <div class="restos-grid" id="resto-grid">
+
+      <div class="resto-card" data-tags="bar budget">
+        <div class="resto-side"><div class="resto-side-fallback">☕</div></div>
+        <div class="resto-body">
+          <div class="resto-meta">
+            <span class="price-badge price-1">€ Abordable</span>
+            <span class="cuisine-badge">Café · Institution</span>
+          </div>
+          <h3>Bar Anita</h3>
+          <p>Institution de l'île depuis des décennies. Les boîtes aux lettres du village y sont encore installées — les habitants viennent chercher leur courrier et prendre un café. Ouvert toute la journée pour petit-déj, déjeuner, dîner ou verre tardif.</p>
+          <a class="resto-link" href="https://baranitaibiza.com/" target="_blank">→ baranitaibiza.com</a>
+        </div>
+      </div>
+
+      <div class="resto-card" data-tags="viande cash budget">
+        <div class="resto-side"><div class="resto-side-fallback">🥩</div></div>
+        <div class="resto-body">
+          <div class="resto-meta">
+            <span class="price-badge price-2">€€ Moyen</span>
+            <span class="cuisine-badge">Viande · Cuisine locale</span>
+            <span class="cash-only">💵 Espèces uniquement</span>
+          </div>
+          <h3>Can Pages</h3>
+          <p>Viande grillée et plats typiques de l'île. Pas de réservation, espèces uniquement — mais délicieux, belle pergola extérieure, cuisine ouverte. À essayer absolument : <em>l'arroz de matances</em>, soupe de riz et viande locale.</p>
+          <a class="resto-link" href="https://caspages.es/fr/" target="_blank">→ caspages.es</a>
+        </div>
+      </div>
+
+      <div class="resto-card" data-tags="poisson budget">
+        <div class="resto-side"><div class="resto-side-fallback">🐟</div></div>
+        <div class="resto-body">
+          <div class="resto-meta">
+            <span class="price-badge price-1">€ Abordable</span>
+            <span class="cuisine-badge">Poisson · Plage</span>
+          </div>
+          <h3>Sa Trenka</h3>
+          <p>Restaurant local sur la plage de Cala Martina, les pieds dans le sable. Cuisine excellente, simple et authentique. Ouvert uniquement le midi (y compris pour un déjeuner tardif).</p>
+          <a class="resto-link" href="https://satrenka.com/" target="_blank">→ satrenka.com</a>
+        </div>
+      </div>
+
+      <div class="resto-card" data-tags="poisson cash">
+        <div class="resto-side"><div class="resto-side-fallback">🎣</div></div>
+        <div class="resto-body">
+          <div class="resto-meta">
+            <span class="price-badge price-2">€€ Moyen</span>
+            <span class="cuisine-badge">Poisson frais · Port</span>
+            <span class="cash-only">💵 Espèces uniquement</span>
+          </div>
+          <h3>El Bigotes</h3>
+          <p>Pépite cachée dans un petit port près de Cala Mastella. Deux services midi uniquement : 12h (poisson frais du matin) et 14h (soupe de poisson typique). Accessible en voiture désormais, petit parking.</p>
+          <a class="resto-link" href="https://www.instagram.com/explore/locations/3109761/chiringuito-el-bigotes/" target="_blank">→ Instagram</a>
+        </div>
+      </div>
+
+      <div class="resto-card" data-tags="poisson viande budget">
+        <div class="resto-side"><div class="resto-side-fallback">🦞</div></div>
+        <div class="resto-body">
+          <div class="resto-meta">
+            <span class="price-badge price-2">€€ Moyen</span>
+            <span class="cuisine-badge">Paella · Grillades de poisson</span>
+          </div>
+          <h3>Pous de Lleo</h3>
+          <p>Perdu au milieu de nulle part, excellente paella et grillades de poisson. Ambiance détendue, peu touristique. Chiringuito sur la plage pour l'apéro avant dîner.</p>
+          <a class="resto-link" href="https://es.poudeslleo.com/" target="_blank">→ poudeslleo.com</a>
+        </div>
+      </div>
+
+      <div class="resto-card" data-tags="bar budget cash">
+        <div class="resto-side"><div class="resto-side-fallback">🍷</div></div>
+        <div class="resto-body">
+          <div class="resto-meta">
+            <span class="price-badge price-1">€ Abordable</span>
+            <span class="cuisine-badge">Bar · Jambon · Sangria</span>
+            <span class="cash-only">💵 Espèces uniquement</span>
+          </div>
+          <h3>Bar Costa</h3>
+          <p>Institution dans le village de Santa Gertrudis. Menu ultra simple : jambon, sandwichs, bières, sangria. Tables basses et tabourets dehors. À l'intérieur, une galerie de tableaux un peu osés. Fermé le mardi.</p>
+          <a class="resto-link" href="https://www.facebook.com/people/Bar-Costa/100063559357932/#" target="_blank">→ Facebook</a>
+        </div>
+      </div>
+
+      <div class="resto-card" data-tags="poisson">
+        <div class="resto-side"><div class="resto-side-fallback">🥘</div></div>
+        <div class="resto-body">
+          <div class="resto-meta">
+            <span class="price-badge price-2">€€ Moyen</span>
+            <span class="cuisine-badge">Paella · Vue mer</span>
+          </div>
+          <h3>Restaurante Sa Caleta</h3>
+          <p>Excellente paella face à la mer sur la plage de Sa Caleta. Belle salle intérieure donnant sur la mer pour les jours nuageux. Idéal pour le dernier repas avant l'aéroport.</p>
+          <a class="resto-link" href="https://sacaleta.es/" target="_blank">→ sacaleta.es</a>
+        </div>
+      </div>
+
+      <div class="resto-card" data-tags="bar">
+        <div class="resto-side"><div class="resto-side-fallback">🍾</div></div>
+        <div class="resto-body">
+          <div class="resto-meta">
+            <span class="price-badge price-2">€€ Moyen</span>
+            <span class="cuisine-badge">Vins naturels · Cuisine recherchée</span>
+          </div>
+          <h3>Casa Lhasa</h3>
+          <p>Bar à vins naturels avec une sélection pointue dans le village de Sant Llorenç, perdu dans l'arrière-pays. Beau jardin, cuisine soignée. Parfois musique live. Concept différent et rafraîchissant.</p>
+          <a class="resto-link" href="https://www.casalhasa.com/" target="_blank">→ casalhasa.com</a>
+        </div>
+      </div>
+
+      <div class="resto-card" data-tags="viande">
+        <div class="resto-side"><div class="resto-side-fallback">🔥</div></div>
+        <div class="resto-body">
+          <div class="resto-meta">
+            <span class="price-badge price-2">€€ Moyen</span>
+            <span class="cuisine-badge">Viande · Grillade soi-même</span>
+          </div>
+          <h3>Can Pilot</h3>
+          <p>Découverte récente à San Rafael. Extérieur trompeur, mais à l'intérieur on se sent très bien. Concept original : on vous apporte la viande crue et un gril pour la cuire soi-même à table.</p>
+          <a class="resto-link" href="https://asadorcanpilot.com/" target="_blank">→ asadorcanpilot.com</a>
+        </div>
+      </div>
+
+      <div class="resto-card" data-tags="poisson bar">
+        <div class="resto-side"><div class="resto-side-fallback">🌊</div></div>
+        <div class="resto-body">
+          <div class="resto-meta">
+            <span class="price-badge price-3">€€€ Haut de gamme (~100€/pers.)</span>
+            <span class="cuisine-badge">Poisson · Vins naturels</span>
+          </div>
+          <h3>Nudo</h3>
+          <p>Sur la plage d'Es Figueral. Cher mais excellent — belle proposition de poisson du jour, équipe jeune et internationale, vins naturels soignés. Vue sur la mer imprenable.</p>
+          <a class="resto-link" href="https://www.nudoibiza.com/" target="_blank">→ nudoibiza.com</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══ SUNSETS ══ -->
+<section id="sunsets" class="sunset-section">
+  <div class="section" style="padding-top:0;padding-bottom:0;">
+    <h2 class="section-title">Tramonti & <em>Chiringuitos</em></h2>
+    <div class="divider" style="--gold:rgba(255,200,100,0.4);">☀</div>
+    <p class="section-intro">Les meilleurs endroits pour regarder le soleil plonger dans la Méditerranée.</p>
+
+    <div class="sunset-cards">
+      <div class="sunset-card">
+        <div class="sunset-card-icon">🏔</div>
+        <h3>Hostal La Torre</h3>
+        <p>Bar-restaurant sur une falaise — l'un des plus beaux couchers de soleil de l'île. Tables installées directement sur la roche.</p>
+        <a href="https://latorreibiza.com/es/restaurante-terraza" target="_blank">→ latorreibiza.com</a>
+      </div>
+
+      <div class="sunset-card">
+        <div class="sunset-card-icon">🌅</div>
+        <h3>Sunset Ashram</h3>
+        <p>Cala Comte. Touristique et cher, mais couchers de soleil inestimables avec musique d'ambiance. Réservation indispensable.</p>
+        <a href="https://sunsetcalaconta.com/" target="_blank">→ sunsetcalaconta.com</a>
+      </div>
+
+      <div class="sunset-card">
+        <div class="sunset-card-icon">🍺</div>
+        <h3>Chiringuito Playa Escondida</h3>
+        <p>2 min de Cala Comte, même coucher de soleil, ambiance plus chill, prix bien plus raisonnables. Notre préféré.</p>
+        <a href="https://calaescondidaibiza.com/" target="_blank">→ calaescondidaibiza.com</a>
+      </div>
+
+      <div class="sunset-card">
+        <div class="sunset-card-icon">🥁</div>
+        <h3>Benirràs — Tambours</h3>
+        <p>Le dimanche soir, des locaux jouent du tambour sur la plage au coucher du soleil. Une véritable expérience ibizienne, unique.</p>
+      </div>
+
+      <div class="sunset-card">
+        <div class="sunset-card-icon">🎵</div>
+        <h3>Café del Mar</h3>
+        <p>Bar historique de musique chill-out à Sant Antoni. Très fréquenté mais iconique. Les gens s'installent sur les rochers face au café pour l'heure magique.</p>
+        <a href="https://cafedelmar.com/ibiza/" target="_blank">→ cafedelmar.com</a>
+      </div>
+
+      <div class="sunset-card">
+        <div class="sunset-card-icon">🍸</div>
+        <h3>Experimental Beach</h3>
+        <p>Beach club sur falaise, musique permanente, très beau coucher de soleil. Réservation nécessaire pour une table — sinon verre sur la falaise.</p>
+        <a href="https://www.experimentalbeachibiza.com/" target="_blank">→ experimentalbeachibiza.com</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ ACTIVITIES ══ -->
+<section id="activities" class="activities-section">
+  <div class="section">
+    <h2 class="section-title">À <em>découvrir</em> sur l'île</h2>
+    <div class="divider">📍</div>
+    <p class="section-intro">Au-delà des plages — villages, marchés, grottes et excursions.</p>
+
+    <div class="activity-row">
+      <div class="activity-card">
+        <h3>🛍 Las Dalias</h3>
+        <p>Le plus beau marché hippie d'Ibiza. Samedi toute la journée, dim/lun/mar en soirée. La discothèque Akasha y est ouverte en plein air jusqu'à 23h (souvent gratuite, ~25€ après).</p>
+        <a href="https://lasdalias.es/" target="_blank">→ lasdalias.es</a>
+      </div>
+      <div class="activity-card">
+        <h3>🏛 Ville d'Ibiza</h3>
+        <p>À visiter en fin d'après-midi ou soirée. La vieille ville perchée sur ses remparts est magnifique. Monter jusqu'à l'église tout en haut pour la vue sur le port.</p>
+      </div>
+    </div>
+
+    <div class="activity-row">
+      <div class="activity-card">
+        <h3>🌊 Formentera</h3>
+        <p>Excursion d'une journée depuis le port d'Ibiza. Ferries fréquents. Louer des scooters à l'arrivée ou embarquer avec la voiture. Mer digne des Maldives. "Plus chic et authentique qu'Ibiza."</p>
+      </div>
+      <div class="activity-card">
+        <h3>🛒 Santa Eulalia</h3>
+        <p>Ville moins touristique, belle promenade en bord de mer. Idéale pour les courses pratiques (supermarchés, coiffeurs, boutiques). Ambiance 100% locale.</p>
+      </div>
+    </div>
+
+    <div class="activity-row">
+      <div class="activity-card">
+        <h3>🪨 Grotte de Can Marçà</h3>
+        <p>Stalactites et stalagmites près du port de San Miguel. Visite à réserver en ligne. Excellent par temps nuageux. Falaises spectaculaires en sortie de grotte.</p>
+        <a href="https://www.cuevasturisticas.es/cova-de-can-mara" target="_blank">→ cuevasturisticas.es</a>
+      </div>
+      <div class="activity-card">
+        <h3>🎬 Amante Movies</h3>
+        <p>Cinéma en plein air sur falaise en bord de mer, le mardi soir. Cocktail de bienvenue + pop-corn à volonté. ~55€/pers. Le cadre est simplement inoubliable.</p>
+        <a href="https://www.amanteibiza.com/movies/" target="_blank">→ amanteibiza.com</a>
+      </div>
+    </div>
+
+    <div class="activity-row">
+      <div class="activity-card">
+        <h3>🍷 Ibizkus Wine</h3>
+        <p>L'une des rares exploitations viticoles de l'île. Cépages autochtones Monastrell et Malvasia. Verre + tapas ou dégustations réservables en ligne.</p>
+        <a href="https://ibizkus.com/" target="_blank">→ ibizkus.com</a>
+      </div>
+      <div class="activity-card">
+        <h3>🥐 Amé Bakery (San Miguel)</h3>
+        <p>Des Argentins qui font de la pâtisserie française exceptionnelle. Marghe & Yohann les ont même choisis pour leur gâteau de mariage ! Idéal pour le petit-déjeuner ou le brunch.</p>
+      </div>
+    </div>
+
+    <div class="activity-row">
+      <div class="activity-card">
+        <h3>🎪 San John — Marché dominical</h3>
+        <p>Petit marché hippie le dimanche avec musique live dans ce village discret, fréquenté par les familles locales. Ambiance authentique et conviviale.</p>
+      </div>
+      <div class="activity-card">
+        <h3>🍷 Bodegas Can Rich</h3>
+        <p>Autre domaine viticole. Visite des vignobles + dégustations à réserver en ligne. Beau cadre dans l'arrière-pays ibizien.</p>
+        <a href="https://bodegascanrich.com/en/" target="_blank">→ bodegascanrich.com</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SOUVENIRS ══ -->
+<section id="souvenirs" class="tips-section">
+  <div class="section">
+    <h2 class="section-title">À goûter & <em>rapporter</em></h2>
+    <div class="divider">⭐</div>
+    <p class="section-intro">Trois incontournables à ne pas rater et à ramener dans ses valises.</p>
+
+    <div class="tips-grid">
+      <div class="tip-card">
+        <div class="tip-icon">🌿</div>
+        <h3>Hierbas Ibizenca</h3>
+        <p>La liqueur emblématique de l'île — une trentaine d'herbes avec un arrière-goût d'anis. Se boit bien fraîche ou sur glace. Digestif, chupito ou à tout moment selon l'envie !</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">🧄</div>
+        <h3>Alioli</h3>
+        <p>Petite sauce servie à l'arrivée dans tous les restaurants, avec pain et olives locales. De l'ail à l'état pur, délicieux avec viandes et légumes. Règle d'or : tout le monde à table en mange sans exception !</p>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">🧂</div>
+        <h3>Sal de Ibiza</h3>
+        <p>Sel des salines d'Ibiza, aromatisé aux herbes locales. Packaging vert d'eau caractéristique. Excellent cadeau. Et leurs chips vendues en supermarché sont une vraie tuerie !</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ NIGHTLIFE ══ -->
+<section id="nightlife" class="night-section">
+  <div class="section" style="padding-top:0;padding-bottom:0;">
+    <h2 class="section-title">Vie <em>Nocturne</em></h2>
+    <div class="divider" style="--gold:rgba(200,160,232,0.4);">♬</div>
+    <p class="section-intro">Pour ceux qui veulent danser jusqu'à l'aube — ou juste jusqu'à minuit.</p>
+
+    <div class="night-grid">
+      <div class="night-card">
+        <div class="night-card-icon">🍒</div>
+        <h3>Pacha</h3>
+        <p>La discothèque la plus historique d'Ibiza. Soirées Flower Power (hippies) ou grands DJs internationaux. Belle terrasse pour respirer entre deux danses.</p>
+        <a href="https://pacha.com/" target="_blank">→ pacha.com</a>
+      </div>
+      <div class="night-card">
+        <div class="night-card-icon">🎶</div>
+        <h3>Amnesia</h3>
+        <p>L'une des plus grandes discothèques de l'île. Ancienne reine des foam parties. Musique électronique. Une icône incontournable d'Ibiza.</p>
+        <a href="https://www.amnesia.es/" target="_blank">→ amnesia.es</a>
+      </div>
+      <div class="night-card">
+        <div class="night-card-icon">🌞</div>
+        <h3>Ushuaia</h3>
+        <p>Discothèque en plein air, de 17h à minuit. Idéale pour sortir sans aller se coucher à 6h du matin. Reggaeton le dimanche. Réservation obligatoire.</p>
+        <a href="https://www.theushuaiaexperience.com/en/club" target="_blank">→ theushuaiaexperience.com</a>
+      </div>
+      <div class="night-card">
+        <div class="night-card-icon">💡</div>
+        <h3>Hi Ibiza</h3>
+        <p>La nouvelle discothèque tendance. Jeux de lumières incroyables, expérience sensorielle totale. Soirée Black Coffee et autres grands noms. Réservation indispensable.</p>
+        <a href="https://www.hiibiza.com/" target="_blank">→ hiibiza.com</a>
+      </div>
+      <div class="night-card">
+        <div class="night-card-icon">🌿</div>
+        <h3>Akasha @ Las Dalias</h3>
+        <p>Option plus douce — en plein air jusqu'à 23h (souvent gratuite), puis en salle (~25€). Une bonne soirée sans excès dans un cadre hippie magique.</p>
+        <a href="https://lasdalias.es/" target="_blank">→ lasdalias.es</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOOTER ══ -->
+<footer class="footer">
+  <p>"Notre île, nos adresses — avec tout notre amour."</p>
+  <div class="footer-hearts">♥ ♥</div>
+  <p>Marghe & Yohann</p>
+  <small>Guide d'Ibiza · Été 2025</small>
+</footer>
+
+<!-- ══ SCRIPTS ══ -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+// ── MAP INIT ──
+const map = L.map('map', { zoomControl: true }).setView([38.98, 1.43], 11);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '© OpenStreetMap contributors',
+  maxZoom: 18,
+}).addTo(map);
+
+function mkIcon(color) {
+  return L.divIcon({
+    className: '',
+    html: `<div style="width:18px;height:18px;background:${color};border-radius:50%;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.3);"></div>`,
+    iconSize: [18, 18],
+    iconAnchor: [9, 9],
+  });
+}
+
+const COLORS = { plage:'#4A8FA8', resto:'#C4714A', sunset:'#C9A84C', activite:'#7A8C5E' };
+
+const SPOTS = [
+  // Plages
+  { lat:38.8748, lng:1.2143, name:'Cala Comte', cat:'plage', desc:'La carte postale d\'Ibiza. Couchers de soleil inoubliables.', tip:'Arriver tôt, parking en hauteur.' },
+  { lat:38.9138, lng:1.2217, name:'Cala Saladeta', cat:'plage', desc:'Crique secrète, 20 min à pied depuis Cala Salada.', tip:'Apporter parasol & pique-nique.' },
+  { lat:39.0892, lng:1.4497, name:'Benirràs', cat:'plage', desc:'Plage hippie. Tambours le dimanche soir au coucher du soleil.', tip:'Y être le dimanche vers 19h.' },
+  { lat:38.8762, lng:1.4066, name:'Ses Salines', cat:'plage', desc:'La plus longue plage d\'Ibiza. Eau magnifique, beach clubs authentiques.', tip:'' },
+  { lat:39.0178, lng:1.6298, name:'Cala Llenya', cat:'plage', desc:'Proche des hôtels Cala Azul. Grand-mère aux sandwichs omelette légendaires.', tip:'' },
+  { lat:39.0208, lng:1.6345, name:'Cala Nova', cat:'plage', desc:'Crique sympa avec joli chiringuito. Préférer le côté gauche.', tip:'' },
+  { lat:39.0520, lng:1.6689, name:'Cala Boix', cat:'plage', desc:'La seule plage de sable volcanique d\'Ibiza (noir-grisé).', tip:'Grand escalier depuis le parking.' },
+  { lat:38.9648, lng:1.6401, name:'S\'illot', cat:'plage', desc:'Petite plage locale près d\'un petit port. Pépite méconnue.', tip:'Arriver tôt, peu d\'espace.' },
+  { lat:38.9032, lng:1.4023, name:'Sa Caleta', cat:'plage', desc:'Idéale dernier jour (proche aéroport). Eau cristalline, sable rouge.', tip:'Paella au restaurant Sa Caleta.' },
+  { lat:38.9712, lng:1.2548, name:'Aqua Blanca', cat:'plage', desc:'Plage sauvage, ventée, roches d\'argile pour soins de boue.', tip:'10 min de marche depuis parking.' },
+  { lat:39.0751, lng:1.5298, name:'Cala Xarraca', cat:'plage', desc:'Ventée avec belles vagues. Parfaite les jours chauds.', tip:'' },
+  { lat:39.0298, lng:1.6501, name:'Cala Oliveira', cat:'plage', desc:'Petite crique secrète, eau bleu-vert, chemin de terre.', tip:'Apporter parasol.' },
+
+  // Restaurants
+  { lat:39.0328, lng:1.5388, name:'Bar Anita', cat:'resto', desc:'Institution. Boîtes aux lettres du village, petit-déj & dîner tardif.', tip:'€ — Toute la journée' },
+  { lat:38.9758, lng:1.4698, name:'Can Pages', cat:'resto', desc:'Viande grillée, arroz de matances. Pas de rés., espèces uniquement.', tip:'€€ — Cash only' },
+  { lat:39.0138, lng:1.6148, name:'Sa Trenka', cat:'resto', desc:'Poisson sur la plage de Cala Martina. Midi uniquement.', tip:'€ — Réservation conseillée' },
+  { lat:39.0458, lng:1.6388, name:'El Bigotes', cat:'resto', desc:'Pépite dans un port. Poisson frais 12h, soupe poisson 14h. Cash uniquement.', tip:'€€ — Cash only, midi uniquement' },
+  { lat:38.9568, lng:1.4488, name:'Bar Costa', cat:'resto', desc:'Jambon, sandwichs, sangria à Santa Gertrudis. Fermé mardi.', tip:'€ — Cash only' },
+  { lat:38.9048, lng:1.3898, name:'Restaurante Sa Caleta', cat:'resto', desc:'Excellente paella avec vue mer sur la plage de Sa Caleta.', tip:'€€ — Vue imprenable' },
+  { lat:39.0068, lng:1.5348, name:'Casa Lhasa', cat:'resto', desc:'Bar à vins naturels à Sant Llorenç. Cuisine recherchée, jardin.', tip:'€€ — Sant Llorenç' },
+  { lat:38.9618, lng:1.4258, name:'Can Pilot', cat:'resto', desc:'Viande que l\'on cuit soi-même sur le gril, à San Rafael.', tip:'€€ — Original & convivial' },
+  { lat:39.0528, lng:1.6548, name:'Nudo', cat:'resto', desc:'Poisson du jour, vins naturels, vue incroyable sur la plage d\'Es Figueral.', tip:'€€€ — ~100€/pers.' },
+
+  // Sunsets
+  { lat:38.9228, lng:1.2648, name:'Hostal La Torre', cat:'sunset', desc:'Bar-resto sur une falaise, l\'un des plus beaux couchers de soleil.', tip:'Réserver pour le sunset.' },
+  { lat:38.8748, lng:1.2153, name:'Chiringuito Cala Escondida', cat:'sunset', desc:'Même sunset que le Sunset Ashram, plus chill et moins cher.', tip:'2 min de Cala Comte.' },
+  { lat:38.9798, lng:1.3098, name:'Café del Mar', cat:'sunset', desc:'Bar historique de chill-out à Sant Antoni. Rochers devant pour voir le soleil plonger.', tip:'Très fréquenté.' },
+  { lat:38.9578, lng:1.5568, name:'Experimental Beach', cat:'sunset', desc:'Beach club sur falaise, musique, apéro ou dîner avec vue.', tip:'Réserver pour une table.' },
+
+  // Activités
+  { lat:39.0278, lng:1.5308, name:'Las Dalias', cat:'activite', desc:'Le marché hippie d\'Ibiza. Sam toute la journée, dim/lun/mar soir.', tip:'Akasha — discothèque en plein air.' },
+  { lat:38.9088, lng:1.4348, name:'Ville d\'Ibiza (Dalt Vila)', cat:'activite', desc:'Vieille ville sur remparts. Monter jusqu\'à l\'église pour la vue sur le port.', tip:'Y aller en fin d\'après-midi.' },
+  { lat:38.9858, lng:1.4578, name:'Santa Gertrudis', cat:'activite', desc:'Charmant village central. Shopping bohème, restaurants variés, Bar Costa.', tip:'' },
+  { lat:39.0498, lng:1.4448, name:'Grotte de Can Marçà', cat:'activite', desc:'Grottes avec stalactites & stalagmites près de San Miguel. Réservation en ligne.', tip:'Idéal par temps nuageux.' },
+  { lat:39.0398, lng:1.4528, name:'Amé Bakery (San Miguel)', cat:'activite', desc:'Pâtisserie française par des Argentins. Choisi par Marghe & Yohann pour leur gâteau de mariage !', tip:'Petit-déj ou brunch.' },
+  { lat:38.8640, lng:1.4050, name:'Formentera (Port d\'Ibiza)', cat:'activite', desc:'Ferries fréquents. Scooters ou voiture à l\'arrivée. Mer des Maldives.', tip:'Journée complète recommandée.' },
+];
+
+const markers = [];
+
+SPOTS.forEach(s => {
+  const m = L.marker([s.lat, s.lng], { icon: mkIcon(COLORS[s.cat]) })
+    .addTo(map)
+    .bindPopup(`
+      <div class="map-popup">
+        <span class="pop-tag" style="background:${COLORS[s.cat]}22;color:${COLORS[s.cat]}">${s.cat.toUpperCase()}</span>
+        <h4>${s.name}</h4>
+        <p>${s.desc}</p>
+        ${s.tip ? `<p style="margin-top:6px;font-style:italic;color:#8A7A5A;font-size:13px;">💡 ${s.tip}</p>` : ''}
+      </div>
+    `, { maxWidth: 260 });
+  m._category = s.cat;
+  markers.push(m);
+});
+
+function filterMap(cat, btn) {
+  document.querySelectorAll('.map-wrap .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  markers.forEach(m => {
+    if (cat === 'all' || m._category === cat) {
+      if (!map.hasLayer(m)) map.addLayer(m);
+    } else {
+      if (map.hasLayer(m)) map.removeLayer(m);
+    }
+  });
+}
+
+// ── CARD FILTER ──
+function filterCards(type, tag, btn) {
+  const gridId = type === 'beach' ? 'beach-grid' : 'resto-grid';
+  const grid = document.getElementById(gridId);
+  const cards = grid.querySelectorAll('.card, .resto-card');
+
+  btn.parentElement.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  cards.forEach(card => {
+    if (tag === 'all') {
+      card.classList.remove('hidden');
+    } else {
+      const tags = (card.dataset.tags || '').split(' ');
+      card.classList.toggle('hidden', !tags.includes(tag));
+    }
+  });
+}
+
+}); // end DOMContentLoaded
+</script>
+</body>
+</html>
